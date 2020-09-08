@@ -1,3 +1,4 @@
 *.pyc
 .todo
 *.mp4
+*.egg-info
