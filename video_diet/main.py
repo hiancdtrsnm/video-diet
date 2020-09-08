@@ -44,7 +44,8 @@ def folder(path: Path = typer.Option(
             if guess and 'video' in guess.mime:
                 videos.append(file)
 
-    pbar = enlighten.Counter(total=len(videos), desc='Video', unit='videos')
+    manager = enlighten.get_manager()
+    pbar = manager.counter(total=len(videos), desc='Video', unit='videos')
     for video in videos:
         typer.secho(f'Processing: {video}')
         if get_codec(str(video)) != 'hevc':
