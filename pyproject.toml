@@ -10,7 +10,7 @@ video-diet = "video_diet.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-typer = "^0.3.2"
+typer = {extras = ["all"], version = "^0.3.2"}
 ffmpeg-python = "^0.2.0"
 filetype = "^1.0.7"
 ffprobe-python = "^1.0.3"
