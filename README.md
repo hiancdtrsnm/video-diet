@@ -28,6 +28,8 @@ Inside the project make `poetry install` and after `poetry shell` for start the 
 
 For testing the code run `video-diet`.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
 Good luck 😉.
 
 Project Structure based on awesome tutorial by @tiangolo at https://typer.tiangolo.com/tutorial/package
