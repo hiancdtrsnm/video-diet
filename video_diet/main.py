@@ -55,7 +55,9 @@ def folder(path: Path = typer.Argument(
             try:
                 convert_video(str(video),str(new_path))
                 os.remove(str(video))
-                shutil.move(new_path, str(video))
+                if video.suffix == new_path.suffix:
+                    shutil.move(new_path, str(video))
+
             except ffmpeg._run.Error:
                 typer.secho(f'ffmpeg could not process this file: {str(video)}', fg=RED)
                 errors_files.append(video)
