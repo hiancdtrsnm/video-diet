@@ -1,4 +1,3 @@
-from typing import Optional
 import typer
 from pathlib import Path
 import filetype
@@ -6,6 +5,7 @@ import os
 import shutil
 from typer.colors import RED
 import enlighten
+import ffmpeg
 
 from .utils import convertion_path, get_codec
 from . import convert_video
@@ -21,7 +21,7 @@ def callback():
 
 
 @app.command()
-def folder(path: Path = typer.Option(
+def folder(path: Path = typer.Argument(
     default='.',
     exists=True,
     file_okay=True,
@@ -45,18 +45,31 @@ def folder(path: Path = typer.Option(
                 videos.append(file)
 
     manager = enlighten.get_manager()
+    errors_files = []
     pbar = manager.counter(total=len(videos), desc='Video', unit='videos')
     for video in videos:
         typer.secho(f'Processing: {video}')
         if get_codec(str(video)) != 'hevc':
             new_path = convertion_path(video)
-            convert_video(str(video),str(new_path))
-            os.remove(str(video))
-            shutil.move(new_path, str(video))
+
+            try:
+                convert_video(str(video),str(new_path))
+                os.remove(str(video))
+                shutil.move(new_path, str(video))
+            except ffmpeg._run.Error:
+                typer.secho(f'ffmpeg could not process this file: {str(video)}', fg=RED)
+                errors_files.append(video)
+
+
         pbar.update()
 
+
+    if errors_files:
+        typer.secho(f'This videos could not be processed : {str(errors_files)}', fg=RED)
+
+
 @app.command()
-def file(path: Path = typer.Option(
+def file(path: Path = typer.Argument(
     default=None,
     exists=True,
     file_okay=True,
