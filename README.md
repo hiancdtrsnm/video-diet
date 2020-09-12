@@ -25,6 +25,28 @@ $ pip install video-diet
 
 </div>
 
+## FFMPEG
+
+In order to run the project you must install `ffmpeg`.
+
+### For Linux
+In any linux machine you can get it from your favorite package manager.
+
+For arch:
+```console
+sudo pacman -S ffmpeg
+```
+
+For Debian/Ubuntu:
+```console
+sudo apt-get install ffmpeg
+```
+
+## For Windows
+
+https://ffmpeg.org/download.html
+
+
 ## Example
 
 ### For a file
@@ -73,5 +95,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 Good luck 😉.
 
 Project Structure based on awesome tutorial by @tiangolo at https://typer.tiangolo.com/tutorial/package
-
-https://ffmpeg.org/download.html
