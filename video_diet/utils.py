@@ -14,7 +14,7 @@ def get_codec(path: str):
 
 def convertion_path(path: Path):
 
-    if path.suffix not in ['mkv', 'mp4']:
+    if path.suffix.lower() not in ['.mkv', '.mp4']:
         return path.parent / (path.stem + '.mkv')
 
     return path.parent / ('conv-' + path.name)
