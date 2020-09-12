@@ -94,4 +94,10 @@ def file(path: Path = typer.Argument(
         typer.secho('The destination file already exist, please delete it', fg=RED)
         return
 
-    convert_video(str(path),str(conv_path))
+    try:
+        convert_video(str(path),str(conv_path))
+        
+    except FileNotFoundError as error:
+        if error.filename == 'ffmpeg':
+            typer.secho('It seems you don\'t have ffmpeg installed', fg=RED)
+        else: raise
