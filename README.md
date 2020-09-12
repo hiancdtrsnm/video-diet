@@ -44,8 +44,12 @@ sudo apt-get install ffmpeg
 
 ## For Windows
 
-https://ffmpeg.org/download.html
+Download a windows ffmpeg build here https://ffmpeg.org/download.html. Unzip it and change the folder name to `FFmpeg`. Copy the folder into `C:\` and then add the path `C:\FFmpeg\bin` to the enviroment variables of the system. 
 
+To check correct instalation open a new instance of cmd and type:
+```console
+ffmpeg --version`.
+```
 
 ## Example
 
