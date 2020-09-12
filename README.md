@@ -30,13 +30,13 @@ $ pip install video-diet
 ### For a file
 
 ```bash
-video-diet file --path test.mp4
+video-diet file test.mp4
 ```
 This option conserve the original file
 
 ## For a folder
 ```bash
-video-diet folder --path ~/Videos
+video-diet folder ~/Videos
 ```
 This option replaces the original file for the converted files
 
