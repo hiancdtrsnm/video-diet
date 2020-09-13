@@ -109,6 +109,10 @@ def file(path: Path = typer.Argument(
         typer.secho('The destination file already exist, please delete it', fg=RED)
         return
 
+    if get_codec(str(path)) == 'hevc':
+        typer.secho('This video codec is already \'hevc\'', fg=RED)
+        return
+
     try:
         convert_video(str(path),str(conv_path))
 
