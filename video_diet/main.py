@@ -53,8 +53,11 @@ def folder(path: Path = typer.Argument(
 
             if guess and 'video' in guess.mime:
 
-                if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
-                    typer.secho(f'ignoring: {file}')
+                ignored_by_extension = ignore_extension is not None and str(file).lower().endswith(ignore_extension)
+                ignored_by_path = ignore_path is not None and str(ignore_path) in str(file)
+                                
+                if ignored_by_extension or ignored_by_path:
+                    typer.secho(f'Ignoring: {file}')
                     continue
                 
                 videos.append(file)
