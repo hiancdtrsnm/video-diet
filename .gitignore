@@ -2,3 +2,4 @@
 .todo
 *.mp4
 *.egg-info
+*.vscode
