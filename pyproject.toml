@@ -17,7 +17,7 @@ ffprobe-python = "^1.0.3"
 enlighten = "^1.6.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
