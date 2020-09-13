@@ -101,4 +101,5 @@ def file(path: Path = typer.Argument(
         if error.filename == 'ffmpeg':
             typer.secho('It seems you don\'t have ffmpeg installed', fg=RED)
             typer.secho('Check FFMPEG secction on https://github.com/hiancdtrsnm/video-diet/blob/master/README.md', fg=RED)
-        else: raise
+        else: 
+            raise error
