@@ -37,6 +37,8 @@ def folder(path: Path = typer.Argument(
     dir_okay=True,
     readable=True,
     resolve_path=True
+), shutdown_at_end: bool = typer.Option(
+    default=False
 )):
     """
     Convert all videos in a folder
@@ -84,6 +86,9 @@ def folder(path: Path = typer.Argument(
     if errors_files:
         typer.secho(f'This videos could not be processed : {str(errors_files)}', fg=RED)
 
+    if shutdown_at_end:
+        os.system("shutdown /s /t 1")
+
 
 @app.command()
 def file(path: Path = typer.Argument(
@@ -93,6 +98,8 @@ def file(path: Path = typer.Argument(
     dir_okay=False,
     readable=True,
     resolve_path=True
+), shutdown_at_end: bool = typer.Option(
+    default=False
 )):
     """
     Convert a file
@@ -111,6 +118,9 @@ def file(path: Path = typer.Argument(
 
     try:
         convert_video(str(path),str(conv_path))
+
+        if shutdown_at_end:
+            os.system("shutdown /s /t 1")
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
