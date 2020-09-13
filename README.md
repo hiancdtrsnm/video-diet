@@ -60,11 +60,22 @@ video-diet file test.mp4
 ```
 This option conserve the original file
 
-## For a folder
+### For a folder
 ```bash
 video-diet folder ~/Videos
 ```
 This option replaces the original file for the converted files
+
+#### Ignoring files on the folder
+```bash
+video-diet folder ~/Videos --ignore-extension .mp4
+```
+This option ignores all the .mp4 files on ~/Videos
+
+```bash
+video-diet folder ~/Videos --ignore-path ~/Videos/subfolder
+```
+This option ignores all the files on ~/Videos/subfolder
 
 ## Note
 
