@@ -3,7 +3,7 @@ from pathlib import Path
 import filetype
 import os
 import shutil
-from typer.colors import RED
+from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
 
@@ -112,6 +112,10 @@ def file(path: Path = typer.Argument(
     if conv_path.exists():
         typer.secho('The destination file already exist, \
                     please delete it', fg=RED)
+        return
+
+    if get_codec(str(path)) == 'hevc':
+        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
         return
 
     try:
