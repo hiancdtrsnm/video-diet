@@ -66,6 +66,7 @@ def folder(path: Path = typer.Argument(
     manager = enlighten.get_manager()
     errors_files = []
     pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
+    
     for video in videos:
         typer.secho(f'Processing: {video}')
         if get_codec(str(video)) != 'hevc':
@@ -92,14 +93,16 @@ def folder(path: Path = typer.Argument(
             new_path = convertion_path(audio, True)
 
             try:
+                
                 convert_file(str(audio),str(new_path))
+                
                 os.remove(str(audio))
                 if audio.suffix == new_path.suffix:
                     shutil.move(new_path, str(audio))
 
             except ffmpeg._run.Error:
                 typer.secho(f'ffmpeg could not process this file: {str(audio)}', fg=RED)
-                errors_files.append(video)
+                errors_files.append(audio)
 
 
         pbar.update()
@@ -126,7 +129,12 @@ def file(path: Path = typer.Argument(
         typer.secho('Please write the video or audio path', fg=RED)
         return
 
-    conv_path = convertion_path(path)
+    guess = filetype.guess(str(path))
+    
+    if guess and 'video' in guess.mime:
+        conv_path = convertion_path(path, False)
+    else:
+        conv_path = convertion_path(path, False)
 
     if conv_path.exists():
         typer.secho('The destination file already exist, \
