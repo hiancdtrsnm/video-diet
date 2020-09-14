@@ -16,13 +16,16 @@ def get_codec(path: str):
     return metadata.audio[0].codec_name 
 
 
-def convertion_path(path: Path, audio:bool ):
-    print(audio)
+def convertion_path(path: Path, audio: bool ):
+    
     if not audio:
-        if path.suffix.lower() not in ['.mkv', '.mp4']:
         
+        if path.suffix.lower() not in ['.mkv', '.mp4']:
+    
             return path.parent / (path.stem + '.mkv')
+        
     else:
+        
         if path.suffix.lower() not in ['.aac', '.m4a']:
         
             return path.parent / (path.stem + '.aac')
@@ -39,8 +42,13 @@ def check_if_video(path: str):
 
 def check_ignore(file, ignore_extension:str, ignore_path:str):
     
-    if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
-        typer.secho(f'ignoring: {file}')
+    ignored_by_extension = ignore_extension is not None \
+        and str(file_path).lower().endswith(ignore_extension)
+    ignored_by_path = ignore_path is not None \
+        and str(ignore_path) in str(file_path)
+        
+    if ignored_by_extension or ignored_by_path:
+        typer.secho(f'Ignoring: {file_path}')
         return True
-    
+            
     return False                

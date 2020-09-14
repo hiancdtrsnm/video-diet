@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "video-diet"
-version = "0.1.6"
+version = "0.1.7"
 description = ""
 authors = ["hian <hiancdtrsnm@gmail.com>"]
 readme = "README.md"
@@ -17,7 +17,7 @@ ffprobe-python = "^1.0.3"
 enlighten = "^1.6.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

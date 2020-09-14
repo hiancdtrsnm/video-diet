@@ -5,6 +5,7 @@
 * Leynier Gutiérrez González ([@leynier](https://github.com/leynier))
 * Hian Cañizares Díaz ([@hiancdtrsnm](https://github.com/hiancdtrsnm))
 * Javier A. Oramas López ([@JavierOramas](https://github.com/javieroramas))
+* Jorge Morgado Vega ([@jmorgadov](https://github.com/jmorgadov))
 
 You can help out by:
 

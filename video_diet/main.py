@@ -3,7 +3,7 @@ from pathlib import Path
 import filetype
 import os
 import shutil
-from typer.colors import RED
+from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
 
@@ -47,10 +47,10 @@ def folder(path: Path = typer.Argument(
 
     for dir, folders, files in os.walk(path):
         base_dir = Path(dir)
-        for file in files:
-            
-            file = base_dir / file
-            guess = filetype.guess(str(file))
+        for item in files:
+
+            file_path = base_dir / item
+            guess = filetype.guess(str(file_path))
 
             if check_ignore(file, ignore_extension, ignore_path):
                 continue
@@ -62,7 +62,7 @@ def folder(path: Path = typer.Argument(
             if guess and 'audio' in guess.mime:
                 
                 audios.append(file)
-
+                
     manager = enlighten.get_manager()
     errors_files = []
     pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
@@ -72,15 +72,16 @@ def folder(path: Path = typer.Argument(
             new_path = convertion_path(video, False)
 
             try:
+
                 convert_file(str(video),str(new_path))
+
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
                     shutil.move(new_path, str(video))
 
             except ffmpeg._run.Error:
-                typer.secho(f'ffmpeg could not process this file: {str(video)}', fg=RED)
+                typer.secho(f'ffmpeg could not process: {str(video)}', fg=RED)
                 errors_files.append(video)
-
 
         pbar.update()
 
@@ -102,9 +103,9 @@ def folder(path: Path = typer.Argument(
 
         pbar.update()
 
-
     if errors_files:
-        typer.secho(f'This videos and audios could not be processed : {str(errors_files)}', fg=RED)
+        typer.secho('This videos could not be processed:', fg=RED)
+        typer.secho(str(errors_files), fg=RED)
 
 
 @app.command()
@@ -124,11 +125,25 @@ def file(path: Path = typer.Argument(
         typer.secho('Please write the video or audio path', fg=RED)
         return
 
-
     conv_path = convertion_path(path)
 
     if conv_path.exists():
-        typer.secho('The destination file already exist, please delete it', fg=RED)
+        typer.secho('The destination file already exist, \
+                    please delete it', fg=RED)
         return
 
-    convert_file(str(path),str(conv_path))
+
+    if get_codec(str(path)) == 'hevc':
+        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
+        return
+
+    try:
+        convert_file(str(path), str(conv_path))
+
+    except FileNotFoundError as error:
+        if error.filename == 'ffmpeg':
+            readme_url = 'https://github.com/hiancdtrsnm/video-diet#FFMPEG'
+            typer.secho('It seems you don\'t have ffmpeg installed', fg=RED)
+            typer.secho(f'Check FFMPEG secction on {readme_url}', fg=RED)
+        else:
+            raise error
