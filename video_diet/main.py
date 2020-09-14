@@ -52,7 +52,7 @@ def folder(path: Path = typer.Argument(
             file_path = base_dir / item
             guess = filetype.guess(str(file_path))
 
-            if check_ignore(file, ignore_extension, ignore_path):
+            if check_ignore(file_path, ignore_extension, ignore_path):
                 continue
             
             if guess and 'video' in guess.mime : 

@@ -1,5 +1,6 @@
 from pathlib import Path
 import filetype
+import typer
 
 from ffprobe import FFProbe
 
@@ -40,7 +41,7 @@ def check_if_video(path: str):
 
     return guess and 'video' in guess
 
-def check_ignore(file, ignore_extension:str, ignore_path:str):
+def check_ignore(file_path, ignore_extension:str, ignore_path:str):
     
     ignored_by_extension = ignore_extension is not None \
         and str(file_path).lower().endswith(ignore_extension)
