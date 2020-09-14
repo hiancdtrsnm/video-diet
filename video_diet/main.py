@@ -7,8 +7,8 @@ from typer.colors import RED
 import enlighten
 import ffmpeg
 
-from .utils import convertion_path,convertion_path_audio, get_codec, get_codec_audio
-from . import convert_video
+from .utils import convertion_path, get_codec, check_ignore
+from . import convert_file
 
 app = typer.Typer()
 
@@ -39,7 +39,7 @@ def folder(path: Path = typer.Argument(
     resolve_path=True
 )):
     """
-    Convert all videos in a folder
+    Convert all videos and audios in a folder
     """
 
     videos = []
@@ -52,32 +52,27 @@ def folder(path: Path = typer.Argument(
             file = base_dir / file
             guess = filetype.guess(str(file))
 
-            if guess and 'video' in guess.mime: 
-
-                if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
-                    typer.secho(f'ignoring: {file}')
-                    continue
+            if check_ignore(file, ignore_extension, ignore_path):
+                continue
+            
+            if guess and 'video' in guess.mime : 
                 
                 videos.append(file)
             
             if guess and 'audio' in guess.mime:
                 
-                if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
-                    typer.secho(f'ignoring: {file}')
-                    continue
-                
                 audios.append(file)
 
     manager = enlighten.get_manager()
     errors_files = []
-    pbar = manager.counter(total=len(videos), desc='Video', unit='videos')
+    pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
     for video in videos:
         typer.secho(f'Processing: {video}')
         if get_codec(str(video)) != 'hevc':
-            new_path = convertion_path(video)
+            new_path = convertion_path(video, False)
 
             try:
-                convert_video(str(video),str(new_path))
+                convert_file(str(video),str(new_path))
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
                     shutil.move(new_path, str(video))
@@ -91,11 +86,11 @@ def folder(path: Path = typer.Argument(
 
     for audio in audios:
         typer.secho(f'Processing: {audio}')
-        if get_codec_audio(str(audio)) != 'hevc':
-            new_path = convertion_path_audio(audio)
+        if get_codec(str(audio)) != 'hevc':
+            new_path = convertion_path(audio, True)
 
             try:
-                convert_video(str(audio),str(new_path))
+                convert_file(str(audio),str(new_path))
                 os.remove(str(audio))
                 if audio.suffix == new_path.suffix:
                     shutil.move(new_path, str(audio))
@@ -109,7 +104,7 @@ def folder(path: Path = typer.Argument(
 
 
     if errors_files:
-        typer.secho(f'This videos could not be processed : {str(errors_files)}', fg=RED)
+        typer.secho(f'This videos and audios could not be processed : {str(errors_files)}', fg=RED)
 
 
 @app.command()
@@ -126,7 +121,7 @@ def file(path: Path = typer.Argument(
     """
 
     if path is None:
-        typer.secho('Please write the video path', fg=RED)
+        typer.secho('Please write the video or audio path', fg=RED)
         return
 
 
@@ -136,4 +131,4 @@ def file(path: Path = typer.Argument(
         typer.secho('The destination file already exist, please delete it', fg=RED)
         return
 
-    convert_video(str(path),str(conv_path))
+    convert_file(str(path),str(conv_path))
