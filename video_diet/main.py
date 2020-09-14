@@ -7,7 +7,7 @@ from typer.colors import RED
 import enlighten
 import ffmpeg
 
-from .utils import convertion_path, get_codec
+from .utils import convertion_path,convertion_path_audio, get_codec, get_codec_audio
 from . import convert_video
 
 app = typer.Typer()
@@ -43,6 +43,7 @@ def folder(path: Path = typer.Argument(
     """
 
     videos = []
+    audios = []
 
     for dir, folders, files in os.walk(path):
         base_dir = Path(dir)
@@ -51,13 +52,21 @@ def folder(path: Path = typer.Argument(
             file = base_dir / file
             guess = filetype.guess(str(file))
 
-            if guess and 'video' in guess.mime:
+            if guess and 'video' in guess.mime: 
 
                 if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
                     typer.secho(f'ignoring: {file}')
                     continue
                 
                 videos.append(file)
+            
+            if guess and 'audio' in guess.mime:
+                
+                if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
+                    typer.secho(f'ignoring: {file}')
+                    continue
+                
+                audios.append(file)
 
     manager = enlighten.get_manager()
     errors_files = []
@@ -75,6 +84,24 @@ def folder(path: Path = typer.Argument(
 
             except ffmpeg._run.Error:
                 typer.secho(f'ffmpeg could not process this file: {str(video)}', fg=RED)
+                errors_files.append(video)
+
+
+        pbar.update()
+
+    for audio in audios:
+        typer.secho(f'Processing: {audio}')
+        if get_codec_audio(str(audio)) != 'hevc':
+            new_path = convertion_path_audio(audio)
+
+            try:
+                convert_video(str(audio),str(new_path))
+                os.remove(str(audio))
+                if audio.suffix == new_path.suffix:
+                    shutil.move(new_path, str(audio))
+
+            except ffmpeg._run.Error:
+                typer.secho(f'ffmpeg could not process this file: {str(audio)}', fg=RED)
                 errors_files.append(video)
 
 
