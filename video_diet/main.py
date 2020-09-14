@@ -57,11 +57,11 @@ def folder(path: Path = typer.Argument(
             
             if guess and 'video' in guess.mime : 
                 
-                videos.append(file)
+                videos.append(file_path)
             
             if guess and 'audio' in guess.mime:
                 
-                audios.append(file)
+                audios.append(file_path)
                 
     manager = enlighten.get_manager()
     errors_files = []
@@ -88,6 +88,7 @@ def folder(path: Path = typer.Argument(
     for audio in audios:
         typer.secho(f'Processing: {audio}')
         if get_codec(str(audio)) != 'hevc':
+            
             new_path = convertion_path(audio, True)
 
             try:
