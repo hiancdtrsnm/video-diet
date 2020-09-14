@@ -8,7 +8,7 @@ import enlighten
 import ffmpeg
 
 from .utils import convertion_path, get_codec
-from . import convert_video
+from . import convert_video, convert_video_progress_bar
 
 app = typer.Typer()
 
@@ -74,7 +74,8 @@ def folder(path: Path = typer.Argument(
             new_path = convertion_path(video)
 
             try:
-                convert_video(str(video), str(new_path))
+                #convert_video(str(video), str(new_path))
+                convert_video_progress_bar(str(video), str(new_path))
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
                     shutil.move(new_path, str(video))
@@ -119,7 +120,8 @@ def file(path: Path = typer.Argument(
         return
 
     try:
-        convert_video(str(path), str(conv_path))
+        convert_video_progress_bar(str(path), str(conv_path))
+        #convert_video(str(path), str(conv_path))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
