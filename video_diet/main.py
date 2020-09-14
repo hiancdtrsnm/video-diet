@@ -46,18 +46,24 @@ def folder(path: Path = typer.Argument(
 
     for dir, folders, files in os.walk(path):
         base_dir = Path(dir)
-        for file in files:
-            
-            file = base_dir / file
-            guess = filetype.guess(str(file))
+        for item in files:
+
+            file_path = base_dir / item
+            guess = filetype.guess(str(file_path))
 
             if guess and 'video' in guess.mime:
 
-                if (not (ignore_extension == None) and str(file).lower().endswith(ignore_extension)) or (not (ignore_path == None) and str(ignore_path) in str(file)) :
-                    typer.secho(f'ignoring: {file}')
+                ignored_by_extension = ignore_extension is not None \
+                    and str(file_path).lower().endswith(ignore_extension)
+
+                ignored_by_path = ignore_path is not None \
+                    and str(ignore_path) in str(file_path)
+
+                if ignored_by_extension or ignored_by_path:
+                    typer.secho(f'Ignoring: {file_path}')
                     continue
-                
-                videos.append(file)
+
+                videos.append(file_path)
 
     manager = enlighten.get_manager()
     errors_files = []
@@ -68,21 +74,20 @@ def folder(path: Path = typer.Argument(
             new_path = convertion_path(video)
 
             try:
-                convert_video(str(video),str(new_path))
+                convert_video(str(video), str(new_path))
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
                     shutil.move(new_path, str(video))
 
             except ffmpeg._run.Error:
-                typer.secho(f'ffmpeg could not process this file: {str(video)}', fg=RED)
+                typer.secho(f'ffmpeg could not process: {str(video)}', fg=RED)
                 errors_files.append(video)
-
 
         pbar.update()
 
-
     if errors_files:
-        typer.secho(f'This videos could not be processed : {str(errors_files)}', fg=RED)
+        typer.secho('This videos could not be processed:', fg=RED)
+        typer.secho(str(errors_files), fg=RED)
 
 
 @app.command()
@@ -102,19 +107,20 @@ def file(path: Path = typer.Argument(
         typer.secho('Please write the video path', fg=RED)
         return
 
-
     conv_path = convertion_path(path)
 
     if conv_path.exists():
-        typer.secho('The destination file already exist, please delete it', fg=RED)
+        typer.secho('The destination file already exist, \
+                    please delete it', fg=RED)
         return
 
     try:
-        convert_video(str(path),str(conv_path))
+        convert_video(str(path), str(conv_path))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
+            readme_url = 'https://github.com/hiancdtrsnm/video-diet#FFMPEG'
             typer.secho('It seems you don\'t have ffmpeg installed', fg=RED)
-            typer.secho('Check FFMPEG secction on https://github.com/hiancdtrsnm/video-diet#FFMPEG', fg=RED)
-        else: 
+            typer.secho(f'Check FFMPEG secction on {readme_url}', fg=RED)
+        else:
             raise error
