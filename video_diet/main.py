@@ -148,3 +148,4 @@ def process_files(files: List, is_audio: bool, errors_files: List, pbar):
         pbar.update()
     
     return errors_files, pbar
+
