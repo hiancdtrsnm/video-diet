@@ -4,6 +4,8 @@ version = "0.1.7"
 description = ""
 authors = ["hian <hiancdtrsnm@gmail.com>"]
 readme = "README.md"
+license = "LGPL-3.0"
+repository = "https://github.com/hiancdtrsnm/video-diet"
 
 [tool.poetry.scripts]
 video-diet = "video_diet.main:app"
