@@ -108,7 +108,7 @@ def folder(path: Path = typer.Argument(
         pbar.update()
 
     if errors_files:
-        typer.secho('This videos could not be processed:', fg=RED)
+        typer.secho('This files could not be processed:', fg=RED)
         typer.secho(str(errors_files), fg=RED)
 
 
@@ -134,7 +134,7 @@ def file(path: Path = typer.Argument(
     if guess and 'video' in guess.mime:
         conv_path = convertion_path(path, False)
     else:
-        conv_path = convertion_path(path, False)
+        conv_path = convertion_path(path, True)
 
     if conv_path.exists():
         typer.secho('The destination file already exist, \
@@ -143,7 +143,7 @@ def file(path: Path = typer.Argument(
 
 
     if get_codec(str(path)) == 'hevc':
-        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
+        typer.secho('This file codec is already \'hevc\'', fg=GREEN)
         return
 
     try:
