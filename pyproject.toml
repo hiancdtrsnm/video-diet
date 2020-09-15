@@ -17,9 +17,9 @@ ffmpeg-python = "^0.2.0"
 filetype = "^1.0.7"
 ffprobe-python = "^1.0.3"
 enlighten = "^1.6.2"
-wexpect = "^4.0.0"
-pexpect = "^4.8.0"
-ansicon = "^1.89.0"
+wexpect = {version ="^4.0.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
+pexpect = {version ="^4.8.0", markers = "sys_platform == 'linux' or platform_system == 'Linux'"}
+ansicon = {version ="^1.89.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
