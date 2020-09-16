@@ -6,9 +6,8 @@ import shutil
 from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
-
 from .utils import convertion_path, get_codec, check_ignore
-from . import convert_file
+from . import convert_file, convert_video_progress_bar
 
 app = typer.Typer()
 
@@ -54,28 +53,27 @@ def folder(path: Path = typer.Argument(
 
             if check_ignore(file_path, ignore_extension, ignore_path):
                 continue
-            
-            if guess and 'video' in guess.mime : 
-                
+
+            if guess and 'video' in guess.mime :
+
                 videos.append(file_path)
-            
+
             if guess and 'audio' in guess.mime:
-                
+
                 audios.append(file_path)
-                
+
     manager = enlighten.get_manager()
     errors_files = []
     pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
-    
+
     for video in videos:
         typer.secho(f'Processing: {video}')
         if get_codec(str(video)) != 'hevc':
             new_path = convertion_path(video, False)
 
             try:
-
-                convert_file(str(video),str(new_path))
-
+                #convert_video(str(video), str(new_path))
+                convert_video_progress_bar(str(video), str(new_path), manager)
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
                     shutil.move(new_path, str(video))
@@ -89,13 +87,13 @@ def folder(path: Path = typer.Argument(
     for audio in audios:
         typer.secho(f'Processing: {audio}')
         if get_codec(str(audio)) != 'hevc':
-            
+
             new_path = convertion_path(audio, True)
 
             try:
-                
+
                 convert_file(str(audio),str(new_path))
-                
+
                 os.remove(str(audio))
                 if audio.suffix == new_path.suffix:
                     shutil.move(new_path, str(audio))
@@ -130,7 +128,7 @@ def file(path: Path = typer.Argument(
         return
 
     guess = filetype.guess(str(path))
-    
+
     if guess and 'video' in guess.mime:
         conv_path = convertion_path(path, False)
     else:
@@ -147,7 +145,8 @@ def file(path: Path = typer.Argument(
         return
 
     try:
-        convert_file(str(path), str(conv_path))
+        convert_video_progress_bar(str(path), str(conv_path))
+        #convert_video(str(path), str(conv_path))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
