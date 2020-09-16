@@ -138,7 +138,7 @@ def file(path: Path = typer.Argument(
     if guess and 'video' in guess.mime:
         conv_path = convertion_path(path, False)
     else:
-        conv_path = convertion_path(path, False)
+        conv_path = convertion_path(path, True)
 
     if conv_path.exists():
         typer.secho('The destination file already exist, \
