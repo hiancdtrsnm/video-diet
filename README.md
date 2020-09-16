@@ -2,13 +2,13 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?label=license)](https://www.gnu.org/licenses/gpl-3.0) [![Last commit](https://img.shields.io/github/last-commit/hiancdtrsnm/video-diet.svg?style=flat)](https://github.com/hiancdtrsnm/video-diet/commits) [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/hiancdtrsnm/video-diet)](https://github.com/hiancdtrsnm/video-diet/commits) [![Github Stars](https://img.shields.io/github/stars/hiancdtrsnm/video-diet?style=flat&logo=github)](https://github.com/hiancdtrsnm/video-diet) [![Github Forks](https://img.shields.io/github/forks/hiancdtrsnm/video-diet?style=flat&logo=github)](https://github.com/hiancdtrsnm/video-diet) [![Github Watchers](https://img.shields.io/github/watchers/hiancdtrsnm/video-diet?style=flat&logo=github)](https://github.com/hiancdtrsnm/video-diet) [![GitHub contributors](https://img.shields.io/github/contributors/hiancdtrsnm/video-diet)](https://github.com/hiancdtrsnm/video-diet/graphs/contributors)
 
-This project aims to reduce the spaces of your videos encoding it on `hevc`.
+This project aims to reduce the spaces of your videos and audios encoding it on `hevc`.
 
 ## Why video-diet?
-The answer is easy. I have a lot old-movies/videos taking a lot of space in the hard-drive.
+The answer is easy. I have a lot old-movies/videos and music/audios taking a lot of space in the hard-drive.
 So I'm always short on disk space, the by accident discover de `hevc` codec. when i need to shrink a video of `3GB`
 to upload it to `Telegram`, the convertion take my 3GB movie and returned a 300 MB with the same quality 😱. So I
-decided that I would convert all my video files, but they are a lot, so I build this tool for it.
+decided that I would convert all my video and audio files , but they are a lot, so I build this tool for it.
 
 More info about `hevc`:
 
