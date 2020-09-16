@@ -36,7 +36,7 @@ def convert_video_progress_bar(source: str, dest: str, manager=None):
     args = map(lambda x: '"'+x+'"' if '\\' in x or '/' in x else x,args)
     args = list(args)
     name = source.rsplit(os.path.sep,1)[-1]
-    proc = expect.spawn(' '.join(args))
+    proc = expect.spawn(' '.join(args), encoding='utf-8')
     pbar = None
     try:
         proc.expect(pattern_duration)
