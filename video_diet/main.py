@@ -71,6 +71,9 @@ def folder(path: Path = typer.Argument(
         if get_codec(str(video)) != 'hevc':
             new_path = convertion_path(video, False)
 
+            if new_path.exists():
+                os.remove(str(new_path))
+
             try:
                 #convert_video(str(video), str(new_path))
                 convert_video_progress_bar(str(video), str(new_path), manager)
@@ -89,6 +92,9 @@ def folder(path: Path = typer.Argument(
         if get_codec(str(audio)) != 'hevc':
 
             new_path = convertion_path(audio, True)
+
+            if new_path.exists():
+                os.remove(str(new_path))
 
             try:
 
