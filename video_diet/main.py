@@ -8,6 +8,7 @@ import enlighten
 import ffmpeg
 from .utils import convertion_path, get_codec, check_ignore, shutdown
 from . import convert_file, convert_video_progress_bar
+import platform
 
 app = typer.Typer()
 
@@ -42,6 +43,10 @@ def folder(path: Path = typer.Argument(
     """
     Convert all videos and audios in a folder
     """
+
+    op_sys = platform.system()
+    if shutdown_at_end and op_sys not in ['linux', 'windows']:
+        typer.secho(f'--shoutdown-at-end is not aviable in {op_sys}')
 
     videos = []
     audios = []
@@ -136,6 +141,10 @@ def file(path: Path = typer.Argument(
     """
     Convert a file
     """
+
+    op_sys = platform.system()
+    if shutdown_at_end and op_sys not in ['linux', 'windows']:
+        typer.secho(f'--shoutdown-at-end is not aviable in {op_sys}')
 
     if path is None:
         typer.secho('Please write the video or audio path', fg=RED)

@@ -61,7 +61,4 @@ def shutdown():
         os.system('shutdown -t 1')
     elif op_sys == 'windows':
         os.system('shutdown /s /t 1')
-    else:
-        typer.secho(f'These feature is not aviable in {op_sys}')
-
 
