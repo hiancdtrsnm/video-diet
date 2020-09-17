@@ -6,7 +6,7 @@ import shutil
 from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
-from .utils import convertion_path, get_codec, check_ignore
+from .utils import convertion_path, get_codec, check_ignore, shutdown
 from . import convert_file, convert_video_progress_bar
 
 app = typer.Typer()
@@ -119,7 +119,7 @@ def folder(path: Path = typer.Argument(
         typer.secho(str(errors_files), fg=RED)
 
     if shutdown_at_end:
-        os.system("shutdown /s /t 1")
+        shutdown()
 
 
 @app.command()
@@ -162,7 +162,7 @@ def file(path: Path = typer.Argument(
         # convert_video(str(path), str(conv_path))
 
         if shutdown_at_end:
-            os.system("shutdown /s /t 1")
+            shutdown()
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':

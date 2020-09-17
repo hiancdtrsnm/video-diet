@@ -1,6 +1,7 @@
 from pathlib import Path
 import filetype
 import typer
+import platform
 
 from ffprobe import FFProbe
 
@@ -53,3 +54,14 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
         return True
 
     return False
+
+def shutdown():
+    op_sys = platform.system()
+    if op_sys == 'linux':
+        os.system('shutdown -t 1')
+    elif op_sys == 'windows':
+        os.system('shutdown /s /t 1')
+    else:
+        typer.secho(f'These feature is not aviable in {op_sys}')
+
+
