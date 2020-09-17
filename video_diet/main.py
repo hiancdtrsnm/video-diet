@@ -45,7 +45,7 @@ def folder(path: Path = typer.Argument(
     """
 
     op_sys = platform.system()
-    if shutdown_at_end and op_sys not in ['linux', 'windows']:
+    if shutdown_at_end and op_sys not in ['Linux', 'Windows']:
         typer.secho(f'--shoutdown-at-end is not aviable in {op_sys}')
 
     videos = []
@@ -143,7 +143,7 @@ def file(path: Path = typer.Argument(
     """
 
     op_sys = platform.system()
-    if shutdown_at_end and op_sys not in ['linux', 'windows']:
+    if shutdown_at_end and op_sys not in ['Linux', 'Windows']:
         typer.secho(f'--shoutdown-at-end is not aviable in {op_sys}')
 
     if path is None:

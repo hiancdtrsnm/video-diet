@@ -57,8 +57,8 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
 
 def shutdown():
     op_sys = platform.system()
-    if op_sys == 'linux':
+    if op_sys == 'Linux':
         os.system('shutdown -t 1')
-    elif op_sys == 'windows':
+    elif op_sys == 'Windows':
         os.system('shutdown /s /t 1')
 
