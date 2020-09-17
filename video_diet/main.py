@@ -56,7 +56,7 @@ def folder(path: Path = typer.Argument(
             if check_ignore(file_path, ignore_extension, ignore_path):
                 continue
 
-            if guess and 'video' in guess.mime :
+            if guess and 'video' in guess.mime:
 
                 videos.append(file_path)
 
@@ -66,7 +66,9 @@ def folder(path: Path = typer.Argument(
 
     manager = enlighten.get_manager()
     errors_files = []
-    pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
+    pbar = manager.counter(total=len(videos)+len(audios),
+                           desc='Files',
+                           unit='files')
 
     for video in videos:
         typer.secho(f'Processing: {video}')
@@ -77,7 +79,7 @@ def folder(path: Path = typer.Argument(
                 os.remove(str(new_path))
 
             try:
-                #convert_video(str(video), str(new_path))
+                # convert_video(str(video), str(new_path))
                 convert_video_progress_bar(str(video), str(new_path), manager)
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
@@ -100,16 +102,15 @@ def folder(path: Path = typer.Argument(
 
             try:
 
-                convert_file(str(audio),str(new_path))
+                convert_file(str(audio), str(new_path))
 
                 os.remove(str(audio))
                 if audio.suffix == new_path.suffix:
                     shutil.move(new_path, str(audio))
 
             except ffmpeg._run.Error:
-                typer.secho(f'ffmpeg could not process this file: {str(audio)}', fg=RED)
+                typer.secho(f'ffmpeg could not process: {str(audio)}', fg=RED)
                 errors_files.append(audio)
-
 
         pbar.update()
 
@@ -152,14 +153,13 @@ def file(path: Path = typer.Argument(
                     please delete it', fg=RED)
         return
 
-
     if get_codec(str(path)) == 'hevc':
         typer.secho('This video codec is already \'hevc\'', fg=GREEN)
         return
 
     try:
         convert_video_progress_bar(str(path), str(conv_path))
-        #convert_video(str(path), str(conv_path))
+        # convert_video(str(path), str(conv_path))
 
         if shutdown_at_end:
             os.system("shutdown /s /t 1")
