@@ -1,20 +1,25 @@
 [tool.poetry]
 name = "video-diet"
-version = "0.1.7"
+version = "0.1.9"
 description = ""
 authors = ["hian <hiancdtrsnm@gmail.com>"]
 readme = "README.md"
+license = "LGPL-3.0"
+repository = "https://github.com/hiancdtrsnm/video-diet"
 
 [tool.poetry.scripts]
 video-diet = "video_diet.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.6,<4"
 typer = {extras = ["all"], version = "^0.3.2"}
 ffmpeg-python = "^0.2.0"
 filetype = "^1.0.7"
 ffprobe-python = "^1.0.3"
 enlighten = "^1.6.2"
+wexpect = {version ="^4.0.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
+pexpect = {version ="^4.8.0", markers = "sys_platform == 'linux' or platform_system == 'Linux'"}
+ansicon = {version ="^1.89.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"

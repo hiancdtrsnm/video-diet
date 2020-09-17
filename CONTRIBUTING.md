@@ -6,6 +6,7 @@
 * Hian Cañizares Díaz ([@hiancdtrsnm](https://github.com/hiancdtrsnm))
 * Javier A. Oramas López ([@JavierOramas](https://github.com/javieroramas))
 * Jorge Morgado Vega ([@jmorgadov](https://github.com/jmorgadov))
+* Frank Sadan Naranjo ([@fsadannn](https://github.com/fsadannn))
 
 You can help out by:
 

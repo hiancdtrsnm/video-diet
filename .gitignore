@@ -2,4 +2,7 @@
 .todo
 *.mp4
 *.egg-info
+*.mp3
+*.w4a
+*.aac
 *.vscode
