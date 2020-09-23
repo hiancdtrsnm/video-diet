@@ -12,10 +12,20 @@ def get_codec(path: str):
         return None
 
     if len(metadata.video) != 0:
-        return metadata.video[0].codec_name
+        return metadata.video[0].codec()
 
-    return metadata.audio[0].codec_name
+    return metadata.audio[0].codec()
 
+def get_bitdepth(path: str):
+    try:
+        metadata = FFProbe(path)
+    except:
+        return None
+
+    if len(metadata.video) != 0:
+        return metadata.video[0].pixel_format()
+
+    return None
 
 def convertion_path(path: Path, audio: bool ):
 
