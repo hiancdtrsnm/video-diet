@@ -2,7 +2,7 @@ from pathlib import Path
 import filetype
 import typer
 
-from ffprobe import FFProbe
+from .patch_ffprobe import FFProbe
 
 
 def get_codec(path: str):
