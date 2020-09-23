@@ -2,7 +2,7 @@ from pathlib import Path
 import filetype
 import typer
 
-from ffprobe import FFProbe
+from .patch_ffprobe import FFProbe
 
 
 def get_codec(path: str):
@@ -12,9 +12,9 @@ def get_codec(path: str):
         return None
 
     if len(metadata.video) != 0:
-        return metadata.video[0].codec_name
+        return metadata.video[0].codec()
 
-    return metadata.audio[0].codec_name
+    return metadata.audio[0].codec()
 
 
 def convertion_path(path: Path, audio: bool ):
