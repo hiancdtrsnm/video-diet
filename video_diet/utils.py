@@ -11,7 +11,7 @@ def get_codec(path: str):
     except:
         return None
 
-    if 'video' in metadata.streams:
+    if len(metadata.video) != 0:
         return metadata.video[0].codec_name
 
     return metadata.audio[0].codec_name
