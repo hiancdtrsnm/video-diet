@@ -17,7 +17,7 @@ ffmpeg-python = "^0.2.0"
 filetype = "^1.0.7"
 ffprobe-python = "^1.0.3"
 enlighten = "^1.6.2"
-wexpect = {git = "https://github.com/raczben/wexpect.git", branch = "master", rev="c33789c", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
+wexpect = {version ="^4.0.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
 pexpect = {version ="^4.8.0", markers = "sys_platform == 'linux' or platform_system == 'Linux'"}
 ansicon = {version ="^1.89.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
 
