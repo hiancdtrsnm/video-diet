@@ -5,9 +5,11 @@ import ffmpeg
 import enlighten
 if sys.platform == 'win32':
     import wexpect as expect
-    # patch windows consloe for scale correctly characters
-    import ansicon
-    ansicon.load()
+    # patch to avoid crash inside conemu
+    if os.environ.get('ConEmuHooks' ,'OFF') == 'OFF':
+        # patch windows consloe for scale correctly characters
+        import ansicon
+        ansicon.load()
 else:
     import pexpect as expect
 
