@@ -162,3 +162,56 @@ def file(path: Path = typer.Argument(
             typer.secho(f'Check FFMPEG secction on {readme_url}', fg=RED)
         else:
             raise error
+
+@app.command()
+def cp(file1: Path = typer.Argument(
+    default=None,
+    exists=True,
+    file_okay=True,
+    dir_okay=False,
+    readable=True,
+    resolve_path=True
+),file2: Path = typer.Argument(
+    default=None,
+    exists=False,
+    file_okay=True,
+    dir_okay=False,
+    readable=True,
+    resolve_path=True
+), force: bool = typer.Option(
+    default=False,
+)):
+    """
+    Copy a file converted
+    """
+
+    if file1 is None:
+        typer.secho('Please write the video or audio path', fg=RED)
+        return
+
+    guess = filetype.guess(str(file1))
+
+    if guess and 'video' in guess.mime:
+        conv_path = file2
+
+    if conv_path.exists():
+        typer.secho('The destination file already exist, \
+                    please delete it', fg=RED)
+        return
+
+
+
+    if get_codec(str(file1)) == 'hevc' and not force:
+        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
+        return
+
+    try:
+        convert_video_progress_bar(str(file1), str(conv_path))
+
+    except FileNotFoundError as error:
+        if error.filename == 'ffmpeg':
+            readme_url = 'https://github.com/hiancdtrsnm/video-diet#FFMPEG'
+            typer.secho('It seems you don\'t have ffmpeg installed', fg=RED)
+            typer.secho(f'Check FFMPEG secction on {readme_url}', fg=RED)
+        else:
+            raise error
