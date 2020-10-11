@@ -3,6 +3,7 @@ import re
 import os
 import ffmpeg
 import enlighten
+from .utils import get_bitdepth
 if sys.platform == 'win32':
     import wexpect as expect
     # patch to avoid crash inside conemu
@@ -13,7 +14,7 @@ if sys.platform == 'win32':
 else:
     import pexpect as expect
 
-__version__ = '0.1.9'
+__version__ = '0.1.10'
 
 pattern_duration = re.compile('duration[ \t\r]?:[ \t\r]?(.+?),[ \t\r]?start',re.IGNORECASE)
 pattern_progress = re.compile('time=(.+?)[ \t\r]?bitrate',re.IGNORECASE)
@@ -23,6 +24,9 @@ BAR_FMT = u'{desc}{desc_pad}{percentage:3.0f}%|{bar}| {count:{len_total}.1f}/{to
 COUNTER_FMT = u'{desc}{desc_pad}{count:.1f} {unit}{unit_pad}' + \
               u'[{elapsed}, {rate:.2f}{unit_pad}{unit}/s]{fill}'
 
+CONVERT_COMMAND_10Bits = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libx265 -x265-params crf=26:profile=main10 -c:a aac -y "{dest}"'
+CONVERT_COMMAND = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libx265 -crf 26 -c:a aac -y "{dest}"'
+
 def convert_file(source: str, dest: str):
     stream = ffmpeg.input(source)
     stream = ffmpeg.output(stream, dest, vcodec='libx265', crf='28')
@@ -31,14 +35,12 @@ def convert_file(source: str, dest: str):
 def convert_video_progress_bar(source: str, dest: str, manager=None):
     if manager is None:
         manager = enlighten.get_manager()
-    stream = ffmpeg.input(source)
-    stream = ffmpeg.output(stream, dest, vcodec='libx265', crf='28')
-    args = ffmpeg.compile(stream, 'ffmpeg')
-    args.insert(1,'-progress pipe:1')
-    args = map(lambda x: '"'+x+'"' if '\\' in x or '/' in x else x,args)
-    args = list(args)
     name = source.rsplit(os.path.sep,1)[-1]
-    proc = expect.spawn(' '.join(args), encoding='utf-8')
+    if get_bitdepth(source).is_10bit:
+        args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
+    else:
+        args = CONVERT_COMMAND.format(source=source, dest=dest)
+    proc = expect.spawn(args, encoding='utf-8')
     pbar = None
     try:
         proc.expect(pattern_duration)
