@@ -22,7 +22,7 @@ pexpect = {version ="^4.8.0", markers = "sys_platform == 'linux' or platform_sys
 ansicon = {version ="^1.89.0", markers = "sys_platform == 'win32' or platform_system == 'Windows'"}
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.0"
+pytest = "^6.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
