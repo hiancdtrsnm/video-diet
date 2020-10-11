@@ -75,7 +75,6 @@ def folder(path: Path = typer.Argument(
                 os.remove(str(new_path))
 
             try:
-                #convert_video(str(video), str(new_path))
                 convert_video_progress_bar(str(video), str(new_path), manager)
                 os.remove(str(video))
                 if video.suffix == new_path.suffix:
@@ -124,6 +123,8 @@ def file(path: Path = typer.Argument(
     dir_okay=False,
     readable=True,
     resolve_path=True
+), force: bool = typer.Option(
+    default=False,
 )):
     """
     Convert a file
@@ -146,13 +147,13 @@ def file(path: Path = typer.Argument(
         return
 
 
-    if get_codec(str(path)) == 'hevc':
-        typer.secho('This file codec is already \'hevc\'', fg=GREEN)
+
+    if get_codec(str(path)) == 'hevc' and not force:
+        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
         return
 
     try:
         convert_video_progress_bar(str(path), str(conv_path))
-        #convert_video(str(path), str(conv_path))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
