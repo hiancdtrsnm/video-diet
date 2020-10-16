@@ -44,7 +44,7 @@ def folder(path: Path = typer.Argument(
     videos = []
     audios = []
 
-    for dir, folders, files in os.walk(path):
+    for dir, files in os.walk(path):
         base_dir = Path(dir)
         for item in files:
 
