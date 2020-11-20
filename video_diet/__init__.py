@@ -14,7 +14,7 @@ if sys.platform == 'win32':
 else:
     import pexpect as expect
 
-__version__ = '0.1.9'
+__version__ = '0.1.10'
 
 pattern_duration = re.compile('duration[ \t\r]?:[ \t\r]?(.+?),[ \t\r]?start',re.IGNORECASE)
 pattern_progress = re.compile('time=(.+?)[ \t\r]?bitrate',re.IGNORECASE)
