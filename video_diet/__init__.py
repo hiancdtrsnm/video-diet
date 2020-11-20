@@ -6,11 +6,9 @@ import enlighten
 from .utils import get_bitdepth
 if sys.platform == 'win32':
     import wexpect as expect
-    # patch to avoid crash inside conemu
-    if os.environ.get('ConEmuHooks' ,'OFF') == 'OFF':
-        # patch windows consloe for scale correctly characters
-        import ansicon
-        ansicon.load()
+    # patch windows consloe for scale correctly characters
+    import ansicon
+    ansicon.load()
 else:
     import pexpect as expect
 

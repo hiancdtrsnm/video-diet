@@ -50,14 +50,14 @@ def get_codec(path: str):
 def get_bitdepth(path: str):
     try:
         metadata = FFProbe(path)
-    except:
-        return None
+    except Exception as e:
+        return PixelFormat('yuv420p')
 
     if len(metadata.video) != 0:
         pixel_format = metadata.video[0].pixel_format()
         return PixelFormat(pixel_format)
 
-    return None
+    return PixelFormat('yuv420p')
 
 def convertion_path(path: Path, audio: bool ):
 
