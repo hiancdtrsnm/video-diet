@@ -76,7 +76,7 @@ def folder(path: Path = typer.Argument(
 
             try:
                 convert_video_progress_bar(str(video), str(new_path), manager)
-                if os.stat(str(new_path)).st_size <= os.stat(str(video)):
+                if os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
                         shutil.move(new_path, str(video))
@@ -101,7 +101,7 @@ def folder(path: Path = typer.Argument(
             try:
 
                 convert_file(str(audio),str(new_path))
-                if os.stat(str(new_path)).st_size <= os.stat(str(audio)):
+                if os.stat(str(new_path)).st_size <= os.stat(str(audio)).st_size:
                     os.remove(str(audio))
                     if audio.suffix == new_path.suffix:
                         shutil.move(new_path, str(audio))
