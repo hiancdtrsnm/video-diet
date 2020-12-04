@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "video-diet"
+name = "video-diet-fork"
 version = "0.1.10"
 description = ""
 authors = ["hian <hiancdtrsnm@gmail.com>"]
