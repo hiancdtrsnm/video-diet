@@ -48,11 +48,10 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
         else:
             args = CONVERT_COMMAND_AV1.format(source=source, dest=dest)
     
-    try:
-        proc = expect.spawn(args, encoding='utf-8')
-        pbar = None
-    except :
-        return
+    
+    proc = expect.spawn(args, encoding='utf-8')
+    pbar = None
+
     
     try:
         proc.expect(pattern_duration)
@@ -67,8 +66,7 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
             cont = percent
     except expect.EOF:
         pass
-    except :
-        pass
+
     
     finally:
         if pbar is not None:
