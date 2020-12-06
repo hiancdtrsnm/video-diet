@@ -47,8 +47,13 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
             args = CONVERT_COMMAND.format(source=source, dest=dest)
         else:
             args = CONVERT_COMMAND_AV1.format(source=source, dest=dest)
-    proc = expect.spawn(args, encoding='utf-8')
-    pbar = None
+    
+    try:
+        proc = expect.spawn(args, encoding='utf-8')
+        pbar = None
+    except :
+        return
+    
     try:
         proc.expect(pattern_duration)
         total = sum(map(lambda x: float(x[1])*60**x[0],enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
