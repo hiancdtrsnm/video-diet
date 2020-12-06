@@ -6,7 +6,7 @@ import shutil
 from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
-from .utils import convertion_path, get_codec, check_ignore
+from .utils import convertion_path, get_codec, check_ignore, choose_encoder
 from . import convert_file, convert_video_progress_bar
 
 app = typer.Typer()
@@ -36,7 +36,11 @@ def folder(path: Path = typer.Argument(
     dir_okay=True,
     readable=True,
     resolve_path=True
-)):
+),
+codec: str = typer.Option(
+    default='hevc'
+)
+):
     """
     Convert all videos and audios in a folder
     """
@@ -68,14 +72,14 @@ def folder(path: Path = typer.Argument(
 
     for video in videos:
         typer.secho(f'Processing: {video}')
-        if get_codec(str(video)) != 'hevc':
+        if get_codec(str(video)) != codec:
             new_path = convertion_path(video, False)
 
             if new_path.exists():
                 os.remove(str(new_path))
 
-            try:
-                convert_video_progress_bar(str(video), str(new_path), manager)
+            try:    
+                convert_video_progress_bar(str(video), str(new_path), choose_encoder(codec),manager)
                 if os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
@@ -91,7 +95,7 @@ def folder(path: Path = typer.Argument(
 
     for audio in audios:
         typer.secho(f'Processing: {audio}')
-        if get_codec(str(audio)) != 'hevc':
+        if get_codec(str(audio)) != codec:
 
             new_path = convertion_path(audio, True)
 
@@ -99,8 +103,7 @@ def folder(path: Path = typer.Argument(
                 os.remove(str(new_path))
 
             try:
-
-                convert_file(str(audio),str(new_path))
+                convert_file(str(audio),str(new_path), choose_encoder(codec))
                 if os.stat(str(new_path)).st_size <= os.stat(str(audio)).st_size:
                     os.remove(str(audio))
                     if audio.suffix == new_path.suffix:
@@ -130,7 +133,11 @@ def file(path: Path = typer.Argument(
     resolve_path=True
 ), force: bool = typer.Option(
     default=False,
-)):
+),
+codec: str = typer.Option(
+    default='hevc'
+)
+):
     """
     Convert a file
     """
@@ -153,12 +160,12 @@ def file(path: Path = typer.Argument(
 
 
 
-    if get_codec(str(path)) == 'hevc' and not force:
-        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
+    if get_codec(str(path)) == codec and not force:
+        typer.secho(f'This video codec is already \'{codec}\'', fg=GREEN)
         return
 
     try:
-        convert_video_progress_bar(str(path), str(conv_path))
+        convert_video_progress_bar(str(path), str(conv_path), choose_encoder(codec))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
@@ -185,7 +192,11 @@ def cp(file1: Path = typer.Argument(
     resolve_path=True
 ), force: bool = typer.Option(
     default=False,
-)):
+),
+codec: str = typer.Option(
+    default='hevc'
+)
+):
     """
     Copy a file converted
     """
@@ -204,14 +215,12 @@ def cp(file1: Path = typer.Argument(
                     please delete it', fg=RED)
         return
 
-
-
-    if get_codec(str(file1)) == 'hevc' and not force:
-        typer.secho('This video codec is already \'hevc\'', fg=GREEN)
+    if get_codec(str(file1)) == codec and not force:
+        typer.secho(f'This video codec is already \'{codec}\'', fg=GREEN)
         return
 
     try:
-        convert_video_progress_bar(str(file1), str(conv_path))
+        convert_video_progress_bar(str(file1), str(conv_path), choose_encoder(codec))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':

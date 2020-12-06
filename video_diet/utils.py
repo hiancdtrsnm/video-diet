@@ -95,3 +95,12 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
         return True
 
     return False
+
+def choose_encoder(codec:str):
+    if codec == 'hevc':
+        return 'libx265'
+    if codec == 'av1':
+        return 'libaom-av1'
+    else:
+        return 'libx265'
+               
