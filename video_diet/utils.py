@@ -99,6 +99,6 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
 def choose_encoder(codec:str):
     if codec == 'av1':
         return 'libaom-av1'
-    else:
-        return 'libx265'
+
+    return 'libx265'
                
