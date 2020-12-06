@@ -67,12 +67,21 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
             cont = percent
     except expect.EOF:
         pass
+    except :
+        pass
+    
     finally:
         if pbar is not None:
             pbar.close()
-    proc.expect(expect.EOF)
-    res = proc.before
-    res += proc.read()
-    exitstatus = proc.wait()
-    if exitstatus:
-        raise ffmpeg.Error('ffmpeg','',res)
+            
+    try:
+        proc.expect(expect.EOF)
+        res = proc.before
+        res += proc.read()
+        exitstatus = proc.wait()
+    
+        if exitstatus:
+            raise ffmpeg.Error('ffmpeg','',res)
+
+    except:
+        pass

@@ -1,0 +1,9 @@
+filetype==1.0.7
+pexpect==4.8.0
+ffprobe_python==1.0.3
+ffmpeg==1.4
+enlighten==1.6.2
+ansicon==1.89.0
+ffprobe==0.5
+typer==0.3.2
+wexpect==4.0.0
