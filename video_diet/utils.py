@@ -51,13 +51,13 @@ def get_bitdepth(path: str):
     try:
         metadata = FFProbe(path)
     except:
-        return None
+        return PixelFormat('yuv420p')
 
     if len(metadata.video) != 0:
         pixel_format = metadata.video[0].pixel_format()
         return PixelFormat(pixel_format)
 
-    return None
+    return PixelFormat('yuv420p')
 
 def convertion_path(path: Path, audio: bool ):
 
@@ -95,3 +95,10 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
         return True
 
     return False
+
+def choose_encoder(codec:str):
+    if codec == 'av1':
+        return 'libaom-av1'
+
+    return 'libx265'
+               
