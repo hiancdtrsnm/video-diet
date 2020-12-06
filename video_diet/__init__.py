@@ -80,6 +80,5 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
     
         if exitstatus:
             raise ffmpeg.Error('ffmpeg','',res)
-
-    except:
+    except UnicodeDecodeError:
         pass
