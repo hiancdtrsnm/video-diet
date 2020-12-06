@@ -79,8 +79,8 @@ codec: str = typer.Option(
                 os.remove(str(new_path))
 
             try:    
-                convert_video_progress_bar(str(video), str(new_path), choose_encoder(codec),manager)
-                if os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
+                status = convert_video_progress_bar(str(video), str(new_path), choose_encoder(codec),manager)
+                if os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size and status:
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
                         shutil.move(new_path, str(video))
