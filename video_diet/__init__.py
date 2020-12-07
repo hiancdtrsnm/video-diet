@@ -25,21 +25,34 @@ COUNTER_FMT = u'{desc}{desc_pad}{count:.1f} {unit}{unit_pad}' + \
 CONVERT_COMMAND_10Bits = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libx265 -x265-params crf=26:profile=main10 -c:a aac -y "{dest}"'
 CONVERT_COMMAND = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libx265 -crf 26 -c:a aac -y "{dest}"'
 
-def convert_file(source: str, dest: str):
+CONVERT_COMMAND_AV1_10Bits = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libaom-av1 -cpu-used 8 -threads 0 -x265-params crf=26:profile=main10 -c:a aac -y "{dest}"'
+CONVERT_COMMAND_AV1 = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libaom-av1 -cpu-used 8 -threads 0 -crf 26 -c:a aac -y "{dest}"'
+
+def convert_file(source: str, dest: str, codec: str):
     stream = ffmpeg.input(source)
-    stream = ffmpeg.output(stream, dest, vcodec='libx265', crf='28')
+    stream = ffmpeg.output(stream, dest, vcodec=codec, crf='28')
     ffmpeg.run(stream)
 
-def convert_video_progress_bar(source: str, dest: str, manager=None):
+def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
     if manager is None:
         manager = enlighten.get_manager()
     name = source.rsplit(os.path.sep,1)[-1]
     if get_bitdepth(source).is_10bit:
-        args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
+        if codec == 'libx265':
+            args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
+        else:
+            args = CONVERT_COMMAND_AV1_10Bits.format(source=source, dest=dest)
     else:
-        args = CONVERT_COMMAND.format(source=source, dest=dest)
+        if codec == 'libx265':
+            args = CONVERT_COMMAND.format(source=source, dest=dest)
+        else:
+            args = CONVERT_COMMAND_AV1.format(source=source, dest=dest)
+    
+    
     proc = expect.spawn(args, encoding='utf-8')
     pbar = None
+
+    
     try:
         proc.expect(pattern_duration)
         total = sum(map(lambda x: float(x[1])*60**x[0],enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
@@ -53,12 +66,20 @@ def convert_video_progress_bar(source: str, dest: str, manager=None):
             cont = percent
     except expect.EOF:
         pass
+
+    
     finally:
         if pbar is not None:
             pbar.close()
-    proc.expect(expect.EOF)
-    res = proc.before
-    res += proc.read()
-    exitstatus = proc.wait()
-    if exitstatus:
-        raise ffmpeg.Error('ffmpeg','',res)
+            
+    try:
+        proc.expect(expect.EOF)
+        res = proc.before
+        res += proc.read()
+        exitstatus = proc.wait()
+    
+        if exitstatus:
+            raise ffmpeg.Error('ffmpeg','',res)
+        return True
+    except UnicodeDecodeError:
+        return False

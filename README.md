@@ -77,6 +77,10 @@ video-diet folder ~/Videos --ignore-path ~/Videos/subfolder
 ```
 This option ignores all the files on ~/Videos/subfolder
 
+## AV1 Support
+
+To use AV1 instead of hevc add --codec av1 to the commnads above and that will use libaom-av1 instad of libx265 to encode the files 
+
 ## Note
 
 The video conversion can take some time. Depending on the original video properties; the conversion time can be longer than the video.
