@@ -14,8 +14,9 @@ else:
 
 __version__ = '0.1.10'
 
-pattern_duration = re.compile('duration[ \t\r]?:[ \t\r]?(.+?),[ \t\r]?start',re.IGNORECASE)
-pattern_progress = re.compile('time=(.+?)[ \t\r]?bitrate',re.IGNORECASE)
+pattern_duration = re.compile(
+    'duration[ \t\r]?:[ \t\r]?(.+?),[ \t\r]?start', re.IGNORECASE)
+pattern_progress = re.compile('time=(.+?)[ \t\r]?bitrate', re.IGNORECASE)
 BAR_FMT = u'{desc}{desc_pad}{percentage:3.0f}%|{bar}| {count:{len_total}.1f}/{total:.1f} ' + \
           u'[{elapsed}<{eta}, {rate:.2f}{unit_pad}{unit}/s]'
 
@@ -28,15 +29,17 @@ CONVERT_COMMAND = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -
 CONVERT_COMMAND_AV1_10Bits = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libaom-av1 -cpu-used 8 -threads 0 -x265-params crf=26:profile=main10 -c:a aac -y "{dest}"'
 CONVERT_COMMAND_AV1 = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map V -c:v libaom-av1 -cpu-used 8 -threads 0 -crf 26 -c:a aac -y "{dest}"'
 
+
 def convert_file(source: str, dest: str, codec: str):
     stream = ffmpeg.input(source)
     stream = ffmpeg.output(stream, dest, vcodec=codec, crf='28')
     ffmpeg.run(stream)
 
-def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
+
+def convert_video_progress_bar(source: str, dest: str, codec: str, manager=None):
     if manager is None:
         manager = enlighten.get_manager()
-    name = source.rsplit(os.path.sep,1)[-1]
+    name = source.rsplit(os.path.sep, 1)[-1]
     if get_bitdepth(source).is_10bit:
         if codec == 'libx265':
             args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
@@ -51,12 +54,15 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
     pbar = None
     try:
         proc.expect(pattern_duration)
-        total = sum(map(lambda x: float(x[1])*60**x[0],enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
+        total = sum(map(lambda x: float(
+            x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
         cont = 0
-        pbar = manager.counter(total=100, desc=name, unit='%',bar_format=BAR_FMT, counter_format=COUNTER_FMT)
+        pbar = manager.counter(
+            total=100, desc=name, unit='%', bar_format=BAR_FMT, counter_format=COUNTER_FMT)
         while True:
             proc.expect(pattern_progress)
-            progress = sum(map(lambda x: float(x[1])*60**x[0],enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
+            progress = sum(map(lambda x: float(
+                x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
             percent = progress/total*100
             pbar.update(percent-cont)
             cont = percent
@@ -70,4 +76,4 @@ def convert_video_progress_bar(source: str, dest: str,codec: str, manager=None):
     res += proc.read()
     exitstatus = proc.wait()
     if exitstatus:
-        raise ffmpeg.Error('ffmpeg','',res)
+        raise ffmpeg.Error('ffmpeg', '', res)
