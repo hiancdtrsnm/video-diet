@@ -31,49 +31,56 @@ CONVERT_COMMAND_AV1 = 'ffmpeg -progress pipe:1 -i "{source}" -map 0 -map -v -map
 
 
 def convert_file(source: str, dest: str, codec: str):
-    stream = ffmpeg.input(source)
-    stream = ffmpeg.output(stream, dest, vcodec=codec, crf='28')
-    ffmpeg.run(stream)
+    try:
+        stream = ffmpeg.input(source)
+        stream = ffmpeg.output(stream, dest, vcodec=codec, crf='28')
+        ffmpeg.run(stream)
+    except e:
+        print(e)
 
 
 def convert_video_progress_bar(source: str, dest: str, codec: str, manager=None):
-    if manager is None:
-        manager = enlighten.get_manager()
-    name = source.rsplit(os.path.sep, 1)[-1]
-    if get_bitdepth(source).is_10bit:
-        if codec == 'libx265':
-            args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
-        else:
-            args = CONVERT_COMMAND_AV1_10Bits.format(source=source, dest=dest)
-    else:
-        if codec == 'libx265':
-            args = CONVERT_COMMAND.format(source=source, dest=dest)
-        else:
-            args = CONVERT_COMMAND_AV1.format(source=source, dest=dest)
-    proc = expect.spawn(args, encoding='utf-8')
-    pbar = None
     try:
-        proc.expect(pattern_duration)
-        total = sum(map(lambda x: float(
-            x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
-        cont = 0
-        pbar = manager.counter(
-            total=100, desc=name, unit='%', bar_format=BAR_FMT, counter_format=COUNTER_FMT)
-        while True:
-            proc.expect(pattern_progress)
-            progress = sum(map(lambda x: float(
+        if manager is None:
+            manager = enlighten.get_manager()
+        name = source.rsplit(os.path.sep, 1)[-1]
+        if get_bitdepth(source).is_10bit:
+            if codec == 'libx265':
+                args = CONVERT_COMMAND_10Bits.format(source=source, dest=dest)
+            else:
+                args = CONVERT_COMMAND_AV1_10Bits.format(
+                    source=source, dest=dest)
+        else:
+            if codec == 'libx265':
+                args = CONVERT_COMMAND.format(source=source, dest=dest)
+            else:
+                args = CONVERT_COMMAND_AV1.format(source=source, dest=dest)
+        proc = expect.spawn(args, encoding='utf-8')
+        pbar = None
+        try:
+            proc.expect(pattern_duration)
+            total = sum(map(lambda x: float(
                 x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
-            percent = progress/total*100
-            pbar.update(percent-cont)
-            cont = percent
-    except expect.EOF:
-        pass
-    finally:
-        if pbar is not None:
-            pbar.close()
-    proc.expect(expect.EOF)
-    res = proc.before
-    res += proc.read()
-    exitstatus = proc.wait()
-    if exitstatus:
-        raise ffmpeg.Error('ffmpeg', '', res)
+            cont = 0
+            pbar = manager.counter(
+                total=100, desc=name, unit='%', bar_format=BAR_FMT, counter_format=COUNTER_FMT)
+            while True:
+                proc.expect(pattern_progress)
+                progress = sum(map(lambda x: float(
+                    x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
+                percent = progress/total*100
+                pbar.update(percent-cont)
+                cont = percent
+        except expect.EOF:
+            pass
+        finally:
+            if pbar is not None:
+                pbar.close()
+        proc.expect(expect.EOF)
+        res = proc.before
+        res += proc.read()
+        exitstatus = proc.wait()
+        if exitstatus:
+            raise ffmpeg.Error('ffmpeg', '', res)
+    except e:
+        print(e)
