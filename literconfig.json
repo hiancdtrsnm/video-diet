@@ -1,0 +1,25 @@
+{
+    "version": "0.1.11",
+    "version_ignore": [
+        "git",
+        "dist",
+        "egg",
+        "CHANGELOG",
+        ".lock"
+    ],
+    "changelog_sections": {
+        "Added": [
+            "add"
+        ],
+        "Fixed": [
+            "fix"
+        ],
+        "Removed": [
+            "remove"
+        ]
+    },
+    "changelog_include_others": true,
+    "changelog_ignore_commits": [
+        "merge"
+    ]
+}
