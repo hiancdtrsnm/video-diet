@@ -63,7 +63,7 @@ def convert_video_progress_bar(source: str, dest: str, codec: str, manager=None)
                 x[1])*60**x[0], enumerate(reversed(proc.match.groups()[0].strip().split(':')))))
             cont = 0
             pbar = manager.counter(
-                total=100, desc=name, unit='%', bar_format=BAR_FMT, counter_format=COUNTER_FMT)
+                total=100, desc=name, unit='%', bar_format=BAR_FMT, counter_format=COUNTER_FMT, leave=False)
             while True:
                 proc.expect(pattern_progress)
                 progress = sum(map(lambda x: float(
