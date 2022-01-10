@@ -37,7 +37,7 @@ def folder(path: Path = typer.Argument(
     readable=True,
     resolve_path=True
 ),
-codec: str = typer.Option(
+    codec: str = typer.Option(
     default='hevc'
 )
 ):
@@ -58,7 +58,7 @@ codec: str = typer.Option(
             if check_ignore(file_path, ignore_extension, ignore_path):
                 continue
 
-            if guess and 'video' in guess.mime :
+            if guess and 'video' in guess.mime:
 
                 videos.append(file_path)
 
@@ -68,7 +68,8 @@ codec: str = typer.Option(
 
     manager = enlighten.get_manager()
     errors_files = []
-    pbar = manager.counter(total=len(videos)+len(audios), desc='Files', unit='files')
+    pbar = manager.counter(total=len(videos)+len(audios),
+                           desc='Files', unit='files')
 
     for video in videos:
         typer.secho(f'Processing: {video}')
@@ -78,15 +79,17 @@ codec: str = typer.Option(
             if new_path.exists():
                 os.remove(str(new_path))
 
-            try:    
-                convert_video_progress_bar(str(video), str(new_path), choose_encoder(codec),manager)
-                if os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
+            try:
+                convert_video_progress_bar(str(video), str(
+                    new_path), choose_encoder(codec), manager)
+                if new_path.exists() and video.exists and os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
                         shutil.move(new_path, str(video))
                 else:
-                    os.remove(str(new_path))
-                    
+                    if(new_path.exists() and video.exists):
+                        os.remove(str(new_path))
+
             except ffmpeg._run.Error:
                 typer.secho(f'ffmpeg could not process: {str(video)}', fg=RED)
                 errors_files.append(video)
@@ -103,7 +106,7 @@ codec: str = typer.Option(
                 os.remove(str(new_path))
 
             try:
-                convert_file(str(audio),str(new_path), choose_encoder(codec))
+                convert_file(str(audio), str(new_path), choose_encoder(codec))
                 if os.stat(str(new_path)).st_size <= os.stat(str(audio)).st_size:
                     os.remove(str(audio))
                     if audio.suffix == new_path.suffix:
@@ -112,9 +115,9 @@ codec: str = typer.Option(
                     os.remove(str(new_path))
 
             except ffmpeg._run.Error:
-                typer.secho(f'ffmpeg could not process this file: {str(audio)}', fg=RED)
+                typer.secho(
+                    f'ffmpeg could not process this file: {str(audio)}', fg=RED)
                 errors_files.append(audio)
-
 
         pbar.update()
 
@@ -134,7 +137,7 @@ def file(path: Path = typer.Argument(
 ), force: bool = typer.Option(
     default=False,
 ),
-codec: str = typer.Option(
+    codec: str = typer.Option(
     default='hevc'
 )
 ):
@@ -158,14 +161,13 @@ codec: str = typer.Option(
                     please delete it', fg=RED)
         return
 
-
-
     if get_codec(str(path)) == codec and not force:
         typer.secho(f'This video codec is already \'{codec}\'', fg=GREEN)
         return
 
     try:
-        convert_video_progress_bar(str(path), str(conv_path), choose_encoder(codec))
+        convert_video_progress_bar(str(path), str(
+            conv_path), choose_encoder(codec))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':
@@ -175,6 +177,7 @@ codec: str = typer.Option(
         else:
             raise error
 
+
 @app.command()
 def cp(file1: Path = typer.Argument(
     default=None,
@@ -183,7 +186,7 @@ def cp(file1: Path = typer.Argument(
     dir_okay=False,
     readable=True,
     resolve_path=True
-),file2: Path = typer.Argument(
+), file2: Path = typer.Argument(
     default=None,
     exists=False,
     file_okay=True,
@@ -193,7 +196,7 @@ def cp(file1: Path = typer.Argument(
 ), force: bool = typer.Option(
     default=False,
 ),
-codec: str = typer.Option(
+    codec: str = typer.Option(
     default='hevc'
 )
 ):
@@ -220,7 +223,8 @@ codec: str = typer.Option(
         return
 
     try:
-        convert_video_progress_bar(str(file1), str(conv_path), choose_encoder(codec))
+        convert_video_progress_bar(str(file1), str(
+            conv_path), choose_encoder(codec))
 
     except FileNotFoundError as error:
         if error.filename == 'ffmpeg':

@@ -8,8 +8,10 @@ from .patch_ffprobe import FFProbe
 px10bit = re.compile('10le$')
 px12bit = re.compile('12le$')
 
+
 class PixelFormat:
     __slots__ = ('_px_format', '_is_10bit', '_is_12bit')
+
     def __init__(self, px_format):
         self._px_format = px_format
         self._is_10bit = px10bit.search(px_format) is not None
@@ -35,17 +37,17 @@ class PixelFormat:
         return self._px_format
 
 
-
 def get_codec(path: str):
     try:
         metadata = FFProbe(path)
+
+        if len(metadata.video) != 0:
+            return metadata.video[0].codec()
+
+        return None
     except:
         return None
 
-    if len(metadata.video) != 0:
-        return metadata.video[0].codec()
-
-    return metadata.audio[0].codec()
 
 def get_bitdepth(path: str):
     try:
@@ -59,7 +61,8 @@ def get_bitdepth(path: str):
 
     return PixelFormat('yuv420p')
 
-def convertion_path(path: Path, audio: bool ):
+
+def convertion_path(path: Path, audio: bool):
 
     if not audio:
 
@@ -76,14 +79,14 @@ def convertion_path(path: Path, audio: bool ):
     return path.parent / ('conv-' + path.name)
 
 
-
 def check_if_video(path: str):
 
     guess = filetype.guess(path)
 
     return guess and 'video' in guess
 
-def check_ignore(file_path, ignore_extension:str, ignore_path:str):
+
+def check_ignore(file_path, ignore_extension: str, ignore_path: str):
 
     ignored_by_extension = ignore_extension is not None \
         and str(file_path).lower().endswith(ignore_extension)
@@ -96,9 +99,9 @@ def check_ignore(file_path, ignore_extension:str, ignore_path:str):
 
     return False
 
-def choose_encoder(codec:str):
+
+def choose_encoder(codec: str):
     if codec == 'av1':
         return 'libaom-av1'
 
     return 'libx265'
-               

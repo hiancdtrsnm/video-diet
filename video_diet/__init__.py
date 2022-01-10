@@ -82,5 +82,5 @@ def convert_video_progress_bar(source: str, dest: str, codec: str, manager=None)
         exitstatus = proc.wait()
         if exitstatus:
             raise ffmpeg.Error('ffmpeg', '', res)
-    except e:
-        print(e)
+    except:
+        pass
