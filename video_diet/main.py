@@ -83,6 +83,8 @@ def folder(path: Path = typer.Argument(
                 convert_video_progress_bar(str(video), str(
                     new_path), choose_encoder(codec), manager)
                 if new_path.exists() and video.exists and os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
+                    with open(str(new_path+".log"), 'a') as f:
+                        f.write(f"{os.stat(str(video)).st_size} => {os.stat(str(new_path)).st_size}\n")
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
                         shutil.move(new_path, str(video))
