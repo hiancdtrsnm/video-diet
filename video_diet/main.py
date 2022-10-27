@@ -8,6 +8,7 @@ import enlighten
 import ffmpeg
 from .utils import convertion_path, get_codec, check_ignore, choose_encoder
 from . import convert_file, convert_video_progress_bar
+from hurry.filesize import size
 
 app = typer.Typer()
 
@@ -83,8 +84,8 @@ def folder(path: Path = typer.Argument(
                 convert_video_progress_bar(str(video), str(
                     new_path), choose_encoder(codec), manager)
                 if new_path.exists() and video.exists and os.stat(str(new_path)).st_size <= os.stat(str(video)).st_size:
-                    with open(str(new_path+".log"), 'a') as f:
-                        f.write(f"{os.stat(str(video)).st_size} => {os.stat(str(new_path)).st_size}\n")
+                    with open(str(new_path)+".log", 'w') as f:
+                        f.write(f"{ size(os.stat(str(video)).st_size)} => {size(os.stat(str(new_path)).st_size)}\n")
                     os.remove(str(video))
                     if video.suffix == new_path.suffix:
                         shutil.move(new_path, str(video))
@@ -110,6 +111,8 @@ def folder(path: Path = typer.Argument(
             try:
                 convert_file(str(audio), str(new_path), choose_encoder(codec))
                 if os.stat(str(new_path)).st_size <= os.stat(str(audio)).st_size:
+                    with open(str(new_path)+".log", 'w') as f:
+                        f.write(f"{size(os.stat(str(audio)).st_size)} => {size(os.stat(str(new_path)).st_size)}\n")
                     os.remove(str(audio))
                     if audio.suffix == new_path.suffix:
                         shutil.move(new_path, str(audio))

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "video-diet"
-version = "0.1.15rc"
+version = "0.1.16rc"
 description = ""
 authors = ["hian <hiancdtrsnm@gmail.com>"]
 readme = "README.md"
