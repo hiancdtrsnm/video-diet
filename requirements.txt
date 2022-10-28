@@ -1,0 +1,10 @@
+ffmpeg
+enlighten
+pexpect
+ffprobe
+filetype
+ansicon
+typer
+wexpect
+hurry.filesize
+eyed3
