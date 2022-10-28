@@ -7,3 +7,4 @@ ansicon
 typer
 wexpect
 hurry.filesize
+eyed3

@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 import filetype
 import typer
+import eyed3
 
 from .patch_ffprobe import FFProbe
 
@@ -36,7 +37,15 @@ class PixelFormat:
     def __str__(self):
         return self._px_format
 
+def copy_metadata(source: str, destination: str):
 
+        audiofile = eyed3.load(source)
+
+        if audiofile is not None:
+
+            audiofile.tag.save(destination)
+
+    
 def get_codec(path: str):
     try:
         metadata = FFProbe(path)

@@ -6,7 +6,7 @@ import shutil
 from typer.colors import RED, GREEN
 import enlighten
 import ffmpeg
-from .utils import convertion_path, get_codec, check_ignore, choose_encoder
+from .utils import convertion_path, get_codec, check_ignore, choose_encoder, copy_metadata
 from . import convert_file, convert_video_progress_bar
 from hurry.filesize import size
 
@@ -113,6 +113,7 @@ def folder(path: Path = typer.Argument(
                 if os.stat(str(new_path)).st_size <= os.stat(str(audio)).st_size:
                     with open(str(new_path)+".log", 'w') as f:
                         f.write(f"{size(os.stat(str(audio)).st_size)} => {size(os.stat(str(new_path)).st_size)}\n")
+                    copy_metadata(str(audio), str(new_path))
                     os.remove(str(audio))
                     if audio.suffix == new_path.suffix:
                         shutil.move(new_path, str(audio))
